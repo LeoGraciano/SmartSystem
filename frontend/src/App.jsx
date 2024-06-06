@@ -9,6 +9,8 @@ import { useLoadingTanks } from "./hooks/useLoadingTanks";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Button, Icon } from "@mui/material";
+import BasicModal from "./components/BasicModal";
+import { TableHistoryFuelSupply } from "./components/TableHistoryFuelSupply";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -112,15 +114,15 @@ function App() {
         </header>
         <div className="layout">
           <div className="">
+            <Button variant="contained" onClick={handleLoadNewFormTank}>
+              Novo Tanque
+            </Button>
             <TankList
               tanks={tanks}
               selectTank={handleTankSelected}
               editTank={handleLoadEditFormTank}
               removeTank={handleTankRemoved}
             />
-            <Button variant="contained" onClick={handleLoadNewFormTank}>
-              Novo Tanque
-            </Button>
           </div>
           <div className="">
             {selectedTank && (
@@ -137,6 +139,13 @@ function App() {
               />
             )}
           </div>
+        </div>
+        <div className="">
+          <BasicModal
+            title="Histórico de abastecimento"
+            element={<TableHistoryFuelSupply />}
+            buttonText={"Histórico de abastecimento"}
+          />
         </div>
       </div>
     </ThemeProvider>

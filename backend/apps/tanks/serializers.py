@@ -34,6 +34,7 @@ class FuelSupplySerializer(serializers.ModelSerializer, EagerLoadingMixin):
     class Meta:
         model = FuelSupply
         fields = [
+            "uuid",
             "tank",
             "employee",
             "used_tag",
@@ -50,17 +51,3 @@ class FuelSupplySerializer(serializers.ModelSerializer, EagerLoadingMixin):
         tag = UseTag.objects.filter(tag__no_serie=value).first()
         if tag:
             return tag
-
-    def validate_km_currency(self, value):
-        tag = self.validate_used_tag(self.initial_data.get("used_tag"))
-        is_valid_km = not UseTag.objects.filter(
-            pk=tag.pk, km_currency__gte=value
-        ).exists()
-        if is_valid_km:
-            return value
-        raise serializers.ValidationError(
-            "Quilometragem atual invalida menor que anterior."
-        )
-
-    def validate(self, attrs):
-        return super().validate(attrs)
