@@ -1,0 +1,128 @@
+.App {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #282c34;
+  color: white;
+}
+
+.App-header {
+  text-align: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-header h1 {
+  color: orange;
+  font-weight: bold;
+}
+
+.App-header .fa-gas-pump {
+  color: white;
+  margin: 0 5px;
+}
+
+.App-header .logout-app {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.orange {
+  color: orange;
+}
+
+.purple {
+  color: purple;
+}
+
+.tank-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+}
+
+.tank-item svg {
+  font-size: 1.2rem;
+  margin: 0 5px;
+}
+
+.button-icon {
+  cursor: pointer;
+}
+
+.fa-trash {
+  color: crimson;
+}
+
+.color-green {
+  color: green;
+}
+
+.color-orange {
+  color: orange;
+}
+
+.color-red {
+  color: red;
+}
+
+.tank-item .title {
+  cursor: pointer;
+}
+
+.form-tank,
+.form-supply,
+.form-auth {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+input,
+textarea {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+button {
+  color: #444;
+  background-color: #f3f3f3;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin: 8px 0;
+  font-weight: bold;
+  display: block;
+}
+
+button:disabled {
+  background-color: #444;
+  color: #f3f3f3;
+  transition: all;
+}
+
+span strong {
+  margin-left: 0.2rem;
+}
+
+.form-auth {
+  width: 50%;
+  margin: 0 25%;
+}
+
+.form-supply .form-field,
+.form-tank .form-field {
+  display: flex;
+  flex-direction: column;
+}
