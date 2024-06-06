@@ -1,11 +1,20 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import APISupply from "../services/api-tanks";
 import { useCookies } from "react-cookie";
+
+import {
+  Typography,
+  IconButton,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  ListItemButton,
+} from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 
 export default function TankList(props) {
   const { tanks } = props;
   const [cookies] = useCookies(["mr-token"]);
-  const handleSelectTank = (tank) => (event) => {
+  const handleSelectTank = (tank) => () => {
     props.selectTank(tank);
   };
 
@@ -20,29 +29,30 @@ export default function TankList(props) {
   };
 
   return (
-    <div className="">
+    <div>
       {tanks &&
-        tanks.map((tank) => {
-          return (
-            <div className="tank-item" key={tank.uuid}>
-              <h2 onClick={handleSelectTank(tank)} className="title">
-                {tank.name}
-              </h2>
-              <FontAwesomeIcon
-                icon="fas fa-edit"
+        tanks.map((tank) => (
+          <ListItemButton key={tank.uuid} onClick={handleSelectTank(tank)}>
+            <ListItemText primary={tank.name} />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="edit"
                 onClick={() => handleEditTank(tank)}
-                className="button-icon"
-                title="Editar"
-              />
-              <FontAwesomeIcon
-                icon="fas fa-trash"
+              >
+                <Edit />
+              </IconButton>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                color="error"
                 onClick={() => handleRemoveTank(tank)}
-                className="button-icon"
-                title="Deletar"
-              />
-            </div>
-          );
-        })}
+              >
+                <Delete />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItemButton>
+        ))}
     </div>
   );
 }

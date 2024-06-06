@@ -6,6 +6,14 @@ import TankForm from "./components/TankForm";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLoadingTanks } from "./hooks/useLoadingTanks";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Button, Icon } from "@mui/material";
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 function App() {
   const [tanks, setTanks] = useState([]);
@@ -87,45 +95,51 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>
-          <FontAwesomeIcon icon="fa fa-gas-pump" />
-          Abastecimento
-        </h1>
-        <FontAwesomeIcon
-          icon="fas fa-sign-out-alt"
-          title="Sair"
-          className="logout-app button-icon"
-          onClick={handleLogoutUser}
-        />
-      </header>
-      <div className="layout">
-        <div className="">
-          <TankList
-            tanks={tanks}
-            selectTank={handleTankSelected}
-            editTank={handleLoadEditFormTank}
-            removeTank={handleTankRemoved}
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <div className="App">
+        <header className="App-header">
+          <h1>
+            <FontAwesomeIcon icon="fa fa-gas-pump" />
+            Abastecimento
+          </h1>
+          <FontAwesomeIcon
+            icon="fas fa-sign-out-alt"
+            title="Sair"
+            className="logout-app button-icon"
+            onClick={handleLogoutUser}
           />
-          <button type="button" onClick={handleLoadNewFormTank}>
-            Novo Tanque
-          </button>
-        </div>
-        <div className="">
-          {selectedTank && (
-            <TankDetails tank={selectedTank} updateTank={handleTankSelected} />
-          )}
-          {editedTank && (
-            <TankForm
-              tank={editedTank}
-              updateTank={handleTankEdited}
-              newTank={handleTankCreated}
+        </header>
+        <div className="layout">
+          <div className="">
+            <TankList
+              tanks={tanks}
+              selectTank={handleTankSelected}
+              editTank={handleLoadEditFormTank}
+              removeTank={handleTankRemoved}
             />
-          )}
+            <Button variant="contained" onClick={handleLoadNewFormTank}>
+              Novo Tanque
+            </Button>
+          </div>
+          <div className="">
+            {selectedTank && (
+              <TankDetails
+                tank={selectedTank}
+                updateTank={handleTankSelected}
+              />
+            )}
+            {editedTank && (
+              <TankForm
+                tank={editedTank}
+                updateTank={handleTankEdited}
+                newTank={handleTankCreated}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 

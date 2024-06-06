@@ -1,23 +1,18 @@
-import {
-  useFormik
-} from 'formik';
-import {
-  useEffect
-} from 'react';
-import {
-  useCookies
-} from 'react-cookie';
-import APISupply from '../services/api-tanks';
-import tankValidationSchema from '../validations/tankValidation';
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import APISupply from "../services/api-tanks";
+import tankValidationSchema from "../validations/tankValidation";
 
 const useTankForm = (props) => {
-  const [cookies] = useCookies(['mr-token']);
+  const [cookies] = useCookies(["mr-token"]);
+  const [error, setError] = useState(null);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      identify: '',
-      description: '',
+      name: "",
+      identify: "",
+      description: "",
       capacity: 0,
       reservoir: 0,
     },
@@ -34,9 +29,9 @@ const useTankForm = (props) => {
   useEffect(() => {
     if (props.tank) {
       formik.setValues({
-        name: props.tank.name || '',
-        identify: props.tank.identify || '',
-        description: props.tank.description || '',
+        name: props.tank.name || "",
+        identify: props.tank.identify || "",
+        description: props.tank.description || "",
         capacity: props.tank.capacity || 0,
         reservoir: props.tank.reservoir || 0,
       });
@@ -44,28 +39,37 @@ const useTankForm = (props) => {
   }, [props.tank]);
 
   const handleUpdateTank = async (values) => {
-    await APISupply.updateTank(props.tank.uuid, values, cookies['mr-token'])
-      .then(async () => {
-        const newTank = await APISupply.getTank(
-          props.tank.uuid,
-          cookies['mr-token']
-        );
-        props.updateTank(newTank);
-      })
-      .catch((err) => console.log(err));
+    try {
+      await APISupply.updateTank(props.tank.uuid, values, cookies["mr-token"]);
+      const newTank = await APISupply.getTank(
+        props.tank.uuid,
+        cookies["mr-token"]
+      );
+      props.updateTank(newTank);
+    } catch (err) {
+      console.log(err);
+      setError("Erro ao atualizar o tanque");
+    }
   };
 
   const handleNewTank = async (values) => {
-    await APISupply.createTank(values, cookies['mr-token'])
-      .then(async (response) => {
-        await APISupply.getTank(response.uuid, cookies['mr-token'])
-          .then((response) => props.newTank(response))
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
+    try {
+      const response = await APISupply.createTank(values, cookies["mr-token"]);
+      const newTank = await APISupply.getTank(
+        response.uuid,
+        cookies["mr-token"]
+      );
+      props.newTank(newTank);
+    } catch (err) {
+      console.log(err);
+      setError("Erro ao criar o tanque");
+    }
   };
 
-  return formik;
+  return {
+    ...formik,
+    error,
+  };
 };
 
 export default useTankForm;

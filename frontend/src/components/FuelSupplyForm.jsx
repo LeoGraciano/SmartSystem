@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import React from "react";
 import { useCookies } from "react-cookie";
 import { useGetUser } from "../hooks/useGetUser";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import APISupply from "../services/api-tanks";
 import FuelSupplyFormValidationSchema from "../validations/fuelSupplyFormValidation";
 import FormField from "./formikField";
@@ -9,10 +11,8 @@ import FormField from "./formikField";
 export default function FuelSupplyForm(props) {
   const [dataUser] = useGetUser();
   const [cookies] = useCookies(["mr-token"]);
-
-  useEffect(() => {
-    console.log(dataUser);
-  }, [dataUser]);
+  const [open, setOpen] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const fields = [
     {
@@ -52,10 +52,19 @@ export default function FuelSupplyForm(props) {
       );
       props.updateTank(response);
     } catch (error) {
+      setErrorMessage("Erro ao salvar os dados. Tente novamente.");
+      setOpen(true);
       console.log(error);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -69,21 +78,29 @@ export default function FuelSupplyForm(props) {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ isSubmitting, values }) => (
+      {({ isSubmitting, values, errors, touched }) => (
         <Form className="form-supply">
           {fields.map((field, index) => (
-            <FormField
-              key={index}
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              placeholder={field.label}
-              max={field.max}
-            />
+            <Box key={index} mb={2}>
+              <Field
+                name={field.name}
+                as={TextField}
+                type={field.type}
+                label={field.label}
+                variant="standard"
+                InputProps={{
+                  inputProps: { max: field.max },
+                }}
+                helperText={touched[field.name] && errors[field.name]}
+                error={touched[field.name] && Boolean(errors[field.name])}
+              />
+            </Box>
           ))}
-          <div className="">
-            <button
+          <Box mt={3}>
+            <Button
               type="submit"
+              variant="contained"
+              color="primary"
               disabled={
                 isSubmitting ||
                 values.litersUsed === 0 ||
@@ -91,8 +108,17 @@ export default function FuelSupplyForm(props) {
               }
             >
               {props.supply.uuid ? "Atualizar" : "Criar"}
-            </button>
-          </div>
+            </Button>
+          </Box>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {errorMessage}
+            </Alert>
+          </Snackbar>
         </Form>
       )}
     </Formik>
